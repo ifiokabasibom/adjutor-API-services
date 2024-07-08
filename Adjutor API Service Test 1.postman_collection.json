@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "457cb946-e78b-44c6-8da4-95c07cc33580",
+		"name": "Adjutor API Service Test 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19130704"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Ensure that the response is JSON\r",
+							"if (pm.response.headers.get(\"Content-Type\").includes(\"application/json\")) {\r",
+							"    // Parse the JSON response\r",
+							"    const jsonResponse = pm.response.json();\r",
+							"    \r",
+							"    // Extract the access token (assuming the token is in jsonResponse.token or jsonResponse.access_token)\r",
+							"    const accessToken = jsonResponse.token || jsonResponse.access_token;\r",
+							"    \r",
+							"    if (accessToken) {\r",
+							"        // Set the access token as a collection variable\r",
+							"        pm.collectionVariables.set(\"accessToken\", accessToken);\r",
+							"        console.log(\"Access token saved to collection variable:\", accessToken);\r",
+							"    } else {\r",
+							"        console.log(\"Access token not found in response\");\r",
+							"    }\r",
+							"} else {\r",
+							"    console.log(\"Response is not in JSON format\");\r",
+							"}\r",
+							"\r",
+							"\r",
+							"// Check if the response status code is 200 (OK)\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check if the response status message is \"OK\"\r",
+							"pm.test(\"Status message is 'OK'\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{adjutor_base_url}}/auth/login",
+					"host": [
+						"{{adjutor_base_url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-Up",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a random full name\r",
+							"function generateRandomFullName() {\r",
+							"    const firstNames = [\"John\", \"Jane\", \"Alex\", \"Emily\", \"Chris\", \"Katie\", \"Michael\", \"Sarah\"];\r",
+							"    const lastNames = [\"Doe\", \"Smith\", \"Johnson\", \"Williams\", \"Brown\", \"Jones\", \"Garcia\", \"Miller\"];\r",
+							"    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];\r",
+							"    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];\r",
+							"    return `${firstName} ${lastName}`;\r",
+							"}\r",
+							"\r",
+							"// Function to generate a random email\r",
+							"function generateRandomEmail() {\r",
+							"    const domains = [\"example.com\", \"mail.com\", \"test.com\", \"demo.com\"];\r",
+							"    const randomString = Math.random().toString(36).substring(2, 10);\r",
+							"    const domain = domains[Math.floor(Math.random() * domains.length)];\r",
+							"    return `${randomString}@${domain}`;\r",
+							"}\r",
+							"\r",
+							"// Function to generate a random password\r",
+							"function generateRandomPassword() {\r",
+							"    const chars = \"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()\";\r",
+							"    let password = \"\";\r",
+							"    for (let i = 0; i < 12; i++) {\r",
+							"        password += chars[Math.floor(Math.random() * chars.length)];\r",
+							"    }\r",
+							"    return password;\r",
+							"}\r",
+							"\r",
+							"// Function to generate a random phone number\r",
+							"function generateRandomPhoneNumber() {\r",
+							"    const phoneNumber = \"0\" + Math.floor(Math.random() * 900000000 + 1000000000).toString().substring(1);\r",
+							"    return phoneNumber;\r",
+							"}\r",
+							"\r",
+							"// Generate random data\r",
+							"const fullName = generateRandomFullName();\r",
+							"const email = generateRandomEmail();\r",
+							"const password = generateRandomPassword();\r",
+							"const phoneNumber = generateRandomPhoneNumber();\r",
+							"\r",
+							"// Set collection variables\r",
+							"pm.collectionVariables.set(\"fullName\", fullName);\r",
+							"pm.collectionVariables.set(\"email\", email);\r",
+							"pm.collectionVariables.set(\"password\", password);\r",
+							"pm.collectionVariables.set(\"phoneNumber\", phoneNumber);\r",
+							"\r",
+							"// Log the set collection variables (optional)\r",
+							"console.log(\"Collection variables set:\");\r",
+							"console.log(\"Full Name: \" + fullName);\r",
+							"console.log(\"Email: \" + email);\r",
+							"console.log(\"Password: \" + password);\r",
+							"console.log(\"Phone Number: \" + phoneNumber);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check if the response status code is 200 (OK)\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check if the response status message is \"OK\"\r",
+							"pm.test(\"Status message is 'OK'\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{fullName}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"phoneNumber\": \"{{phoneNumber}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{adjutor_base_url}}/auth/sign-up",
+					"host": [
+						"{{adjutor_base_url}}"
+					],
+					"path": [
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retrieve API Keys",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check if the response status code is 200 (OK)\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Check if the response status message is \"OK\"\r",
+							"pm.test(\"Status message is 'OK'\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{adjutor_base_url}}/auth/api-keys",
+					"host": [
+						"{{adjutor_base_url}}"
+					],
+					"path": [
+						"auth",
+						"api-keys"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "adjutor_base_url",
+			"value": "https://app.adjutor.io",
+			"type": "string"
+		},
+		{
+			"key": "fullName",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "phoneNumber",
+			"value": ""
+		}
+	]
+}
